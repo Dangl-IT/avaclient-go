@@ -45,6 +45,9 @@ sed -i 's/Elements \[\]IElementDto/Elements \[\]IElementDtoHolder/g' ${LIB_DIR}m
 sed -i 's/Elements \[\]IElementDto/Elements \[\]IElementDtoHolder/g' ${LIB_DIR}model_service_specification_group_dto.go
 sed -i 's/Elements \[\]IElementDto/Elements \[\]IElementDtoHolder/g' ${LIB_DIR}model_service_specification_group_dto_all_of.go
 
+echo "[I] Applying fix for content-type check"
+sed -i 's/vnd\\.\[\^;\]\+/(?:vnd\\.[^;]+|problem)/g' ${LIB_DIR}client.go
+
 ## GO FMT
 GODIRS=$(go list $LIB_DIR/... | grep -v /vendor/)
 GOFILES=$(find $LIB_DIR -type f -name '*.go' -not -path "./vendor/*")
@@ -64,7 +67,6 @@ echo "[I] Running go tests: $(go version)"
 go test $GODIRS
 
 echo "[I] Cleaning up..."
-rm -f $LIB_DIR/.travis.yml
 rm -f $LIB_DIR/git_push.sh
 rm -rf $LIB_DIR/.openapi-generator
 rm -rf $LIB_DIR/api
